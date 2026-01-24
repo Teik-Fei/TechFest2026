@@ -48,5 +48,5 @@ class SkillMatchResponse(BaseModel):
     job_id: int
     job_title: str
     match_percentage: float
-    matching_skills: List[str]
+    matched_skills: List[str]
     missing_skills: List[str]
