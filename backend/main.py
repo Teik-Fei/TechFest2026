@@ -18,7 +18,7 @@ from file_utils import (
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Job Match Platform API")
+app = FastAPI(title="JobScope API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,7 +33,7 @@ app.add_middleware(
 @app.get("/api/jobs")
 def get_jobs(
     skip: int = 0,
-    limit: int =349,
+    limit: int = 349,
     employment_type: Optional[str] = None,
     location: Optional[str] = None,
     company: Optional[str] = None,
@@ -90,12 +90,10 @@ def get_job_stats(db: Session = Depends(get_db)):
 @app.post("/api/users", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     """Create new user profile or return existing user"""
-    # Check if user already exists
     existing_user = db.query(models.User).filter(models.User.email == user.email).first()
     if existing_user:
         return existing_user
     
-    # Create new user
     db_user = models.User(**user.dict())
     db.add(db_user)
     db.commit()
@@ -232,29 +230,23 @@ def api_parse_resume(resume_text: str, db: Session = Depends(get_db)):
 async def upload_resume(file: UploadFile = File(...), db: Session = Depends(get_db)):
     """Upload and process resume file (PDF or TXT)"""
     try:
-        # Read file content
         file_content = await file.read()
         
-        # Extract text based on file type
         resume_text = extract_text_from_file(file.filename, file_content)
         
         if not resume_text or len(resume_text.strip()) < 50:
             raise HTTPException(status_code=400, detail="Resume appears to be empty or too short")
         
-        # Extract email and name
         email = extract_email_from_text(resume_text)
         if not email:
             email = "user@example.com"
         
         name = extract_name_from_filename(file.filename)
         
-        # Extract skills using AI
         skills = extract_skills_from_resume(resume_text)
         
-        # Create or get user
         existing_user = db.query(models.User).filter(models.User.email == email).first()
         if existing_user:
-            # Update existing user
             existing_user.name = name
             existing_user.skills = skills
             existing_user.resume_text = resume_text
@@ -262,7 +254,6 @@ async def upload_resume(file: UploadFile = File(...), db: Session = Depends(get_
             db.refresh(existing_user)
             user = existing_user
         else:
-            # Create new user
             user = models.User(
                 email=email,
                 name=name,
@@ -311,7 +302,7 @@ def bulk_extract_skills(limit: int = 10, db: Session = Depends(get_db)):
 @app.get("/")
 def root():
     return {
-        "message": "Job Match Platform API",
+        "message": "JobScope API",
         "docs": "/docs",
         "total_jobs": "350+",
         "status": "active"

@@ -17,7 +17,20 @@ function App() {
   const [locationFilter, setLocationFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
 
-  // Calculate skill match percentage
+  // Generate a simulated turnover rate based on company name (for demo purposes)
+  const generateTurnoverRate = (company) => {
+    if (!company) return 12;
+    // Simple hash function to generate consistent but varied turnover rates
+    let hash = 0;
+    for (let i = 0; i < company.length; i++) {
+      hash = ((hash << 5) - hash) + company.charCodeAt(i);
+      hash = hash & hash;
+    }
+    // Generate rate between 5% and 25%
+    const rate = 5 + (Math.abs(hash) % 21);
+    return rate;
+  };
+
   const calculateMatch = (userSkills, jobSkills) => {
     if (!jobSkills || jobSkills.length === 0) return 0;
     if (!userSkills || userSkills.length === 0) return 0;
@@ -41,7 +54,6 @@ function App() {
     setLoading(true);
 
     try {
-      // Support both PDF and TXT files
       const allowedTypes = ['application/pdf', 'text/plain'];
       const allowedExtensions = ['.pdf', '.txt'];
       const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
@@ -52,11 +64,9 @@ function App() {
         return;
       }
 
-      // Use FormData to upload file
       const formData = new FormData();
       formData.append('file', file);
 
-      // Upload file and get user data with extracted skills
       const uploadRes = await axios.post(`${API_URL}/api/upload-resume`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -65,28 +75,23 @@ function App() {
 
       setCurrentUser(uploadRes.data.user);
       
-      // Show success message with file type
       const fileType = uploadRes.data.file_type;
       console.log(`Successfully processed ${fileType} file with ${uploadRes.data.extracted_skills.length} skills extracted`);
 
-      // Load jobs
       const jobsRes = await axios.get(`${API_URL}/api/jobs`);
       const jobs = jobsRes.data;
       
-      // Calculate match percentages only for jobs that already have skills
-      // This makes loading much faster - skills will be extracted on-demand when viewing job details
       const matches = {};
       for (const job of jobs) {
         if (job.required_skills && job.required_skills.length > 0) {
           matches[job.id] = calculateMatch(uploadRes.data.user.skills, job.required_skills);
         } else {
-          matches[job.id] = 0; // Show 0% for jobs without extracted skills yet
+          matches[job.id] = 0;
         }
       }
       
       setJobMatches(matches);
       
-      // Sort jobs by match percentage (highest first)
       const sortedJobs = [...jobs].sort((a, b) => 
         (matches[b.id] || 0) - (matches[a.id] || 0)
       );
@@ -115,7 +120,6 @@ function App() {
       return matchesSearch && matchesLocation && matchesType;
     });
     
-    // Keep sorting by match percentage
     const sortedFiltered = [...filtered].sort((a, b) => 
       (jobMatches[b.id] || 0) - (jobMatches[a.id] || 0)
     );
@@ -136,7 +140,6 @@ function App() {
       });
       setMatchData(matchRes.data);
       
-      // Update the match percentage for this job in the list
       if (matchRes.data.match_percentage !== undefined) {
         setJobMatches(prev => ({
           ...prev,
@@ -181,12 +184,11 @@ function App() {
   return (
     <div className="App">
       <header className="header">
-        <h1>🎯 Job Match Platform</h1>
-        <p>Find your perfect job with AI-powered matching</p>
+        <h1>🎯jobscope.</h1>
+        <p><h3>Your AI-powered career kaki</h3></p>
       </header>
 
       <div className="container">
-        {/* Upload Section */}
         {!currentUser && (
           <div className="card">
             <h2>Step 1: Upload Your Resume</h2>
@@ -204,7 +206,6 @@ function App() {
           </div>
         )}
 
-        {/* User Info */}
         {currentUser && (
           <div className="card user-info">
             <h3>Your Profile</h3>
@@ -214,7 +215,6 @@ function App() {
           </div>
         )}
 
-        {/* Search Section */}
         {currentUser && !selectedJob && (
           <>
             <div className="card">
@@ -243,7 +243,6 @@ function App() {
               </div>
             </div>
 
-            {/* Job Results */}
             <div className="card">
               <h2>Jobs</h2>
               <div className="job-list">
@@ -251,6 +250,7 @@ function App() {
                   const matchPercentage = jobMatches[job.id] || 0;
                   const matchClass = matchPercentage >= 70 ? 'high-match' : 
                                     matchPercentage >= 40 ? 'medium-match' : 'low-match';
+                  const turnoverRate = generateTurnoverRate(job.company);
                   
                   return (
                     <div key={job.id} className="job-card" onClick={() => showJobDetail(job.id)}>
@@ -259,8 +259,13 @@ function App() {
                           <div className="job-title">{job.title}</div>
                           <div className="job-company">{job.company}</div>
                         </div>
-                        <div className={`match-badge ${matchClass}`}>
-                          {matchPercentage.toFixed(0)}% Match
+                        <div className="badge-container">
+                          <div className={`match-badge ${matchClass}`}>
+                            {matchPercentage.toFixed(0)}% Match
+                          </div>
+                          <div className="turnover-badge">
+                            {turnoverRate}% Turnover
+                          </div>
                         </div>
                       </div>
                       <div className="job-meta">
@@ -276,12 +281,14 @@ function App() {
           </>
         )}
 
-        {/* Job Detail */}
         {selectedJob && !roadmap && (
           <div className="card">
             <button className="back-btn" onClick={() => setSelectedJob(null)}>← Back to Jobs</button>
             <h2>{selectedJob.title}</h2>
             <h3>{selectedJob.company}</h3>
+            <div className="company-stats">
+              <span className="stat-item">📊 Company Turnover Rate: {generateTurnoverRate(selectedJob.company)}%</span>
+            </div>
             
             {matchData && (
               <>
@@ -321,7 +328,6 @@ function App() {
           </div>
         )}
 
-        {/* Roadmap */}
         {roadmap && (
           <div className="card">
             <button className="back-btn" onClick={() => setRoadmap(null)}>← Back to Job</button>
@@ -350,7 +356,6 @@ function App() {
           </div>
         )}
 
-        {/* Loading */}
         {loading && (
           <div className="loading">
             <div className="spinner"></div>

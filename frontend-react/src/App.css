@@ -26,6 +26,7 @@ body {
   margin-bottom: 10px;
 }
 
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -152,6 +153,13 @@ body {
   color: #667eea;
 }
 
+.badge-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
 .match-badge {
   padding: 8px 16px;
   border-radius: 20px;
@@ -174,6 +182,17 @@ body {
 .match-badge.low-match {
   background: #f0f0f0;
   color: #666;
+}
+
+.turnover-badge {
+  padding: 6px 14px;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 0.85em;
+  background: linear-gradient(135deg, #f6d365, #fda085);
+  color: #fff;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .match-score {
@@ -214,6 +233,20 @@ body {
 
 .skill-tag.missing {
   background: #ff9800;
+}
+
+.company-stats {
+  margin: 15px 0;
+  padding: 12px;
+  background: #fff8f0;
+  border-radius: 8px;
+  border-left: 4px solid #fda085;
+}
+
+.stat-item {
+  color: #d97150;
+  font-weight: 600;
+  font-size: 1em;
 }
 
 .job-description {

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON
+﻿from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON
 from database import Base
 from datetime import datetime
 
@@ -38,3 +38,4 @@ class Application(Base):
     status = Column(String, default="applied")
     applied_at = Column(DateTime, default=datetime.utcnow)
     notes = Column(Text)
+

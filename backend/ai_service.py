@@ -26,7 +26,7 @@ Return format: ["skill1", "skill2", "skill3"]"""
     try:
         response = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             temperature=0.3
         )
         content = response.choices[0].message.content.strip()
@@ -73,7 +73,7 @@ Return ONLY a JSON object with this exact structure:
     try:
         response = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             temperature=0.5
         )
         content = response.choices[0].message.content.strip()
@@ -97,7 +97,7 @@ Return format: ["skill1", "skill2", "skill3"]"""
     try:
         response = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             temperature=0.3
         )
         content = response.choices[0].message.content.strip()

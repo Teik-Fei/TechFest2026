@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+﻿from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 
@@ -50,3 +50,64 @@ class SkillMatchResponse(BaseModel):
     match_percentage: float
     matched_skills: List[str]
     missing_skills: List[str]
+
+
+class JobTrackerCreate(BaseModel):
+
+    userId: int
+
+    company: str
+
+    position: str
+
+    status: str
+
+    dateApplied: str
+
+    notes: Optional[str] = None
+
+
+
+class JobTrackerUpdate(BaseModel):
+
+    company: Optional[str] = None
+
+    position: Optional[str] = None
+
+    status: Optional[str] = None
+
+    dateApplied: Optional[str] = None
+
+    notes: Optional[str] = None
+
+    userId: Optional[int] = None
+
+
+
+class JobTracker(BaseModel):
+
+    id: int
+
+    user_id: int
+
+    company: str
+
+    position: str
+
+    status: str
+
+    dateApplied: str
+
+    notes: Optional[str] = None
+
+    created_at: datetime
+
+    updated_at: datetime
+
+
+
+    class Config:
+
+        from_attributes = True
+
+
