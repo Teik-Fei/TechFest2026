@@ -1,6 +1,6 @@
 # jobscope.
 ### Your AI-Powered Career Kaki  
-Team 74
+Team 74 (Techfest)
 
 ---
 
@@ -19,9 +19,9 @@ We noticed three recurring problems:
 Existing job portals only show listings.  
 They don’t guide people on **what to learn, how to improve, or how to position themselves**.
 
-We wanted to build something different.
+We wanted to build something different from the usual websites.
 
-Not just a job board, but a **career companion**.
+Not just a job board, but a **career companion** that guides our users.
 
 ---
 
@@ -141,7 +141,14 @@ Our long-term vision:
 
 > To become every job seeker’s trusted AI career partner, from student to professional.
 
+# Contributors
+- Teik Fei
+- Wei Xuan
+- Zhe Yu
+- Xiao Zhi
+
 
 #  jobscope.
 ### Your AI-Powered Career Kaki
 Because no unemployed person should navigate their career alone.
+
